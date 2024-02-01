@@ -73,6 +73,7 @@ colnames(passagelines) <- c("passage", "cell_line", "neurosphere_num", "area", "
 ### Separate into genotypes ##########################
 dko <- c("10-4")
 wt <- c("2-2")
+ko2 <- c()
 
 i <- 1
 genotype <- data.frame(matrix(data=c('init', 'init', 'init', 'init', 'init'),nrow=1, ncol=5))
@@ -149,3 +150,42 @@ while(i <= length(wt)){
   }
   i <- i + 1
 }
+
+i <- 1
+while(i <= length(ko2)){
+  line <- ko2[i]
+  target_rows <- passagelines[(grepl(ko2[i], passagelines$cell_line)),]
+  # need to determine passage number and type 
+  # add a new row for passage number and type if it does not already exist and add to existing one if it does
+  for(num in 1:nrow(target_rows)){
+    print(num)
+    row <- target_rows[num,]
+    if(!row$passage[1] %in% genotype$passage){
+      vector <- c(row$passage, "2KO", row$neurosphere_num, row$area, as.numeric(row$area) / as.numeric(row$neurosphere_num)) 
+      genotype <- rbind(genotype, vector)
+    }
+    else if (!(genotype[genotype$passage == row$passage[1],]$type =='2KO')){
+      vector <- c(row$passage, "2KO", row$neurosphere_num, row$area, as.numeric(row$area) / as.numeric(row$neurosphere_num)) 
+      genotype <- rbind(genotype, vector)
+    }
+    else{
+      passage_vector <- genotype$passage == row$passage
+      type_vector <- genotype$type == "2KO"
+      selected <- genotype[(passage_vector & type_vector),]
+      
+      neurosphere_original <- as.numeric(selected$neurosphere_num)
+      area_original <- as.numeric(selected$area)
+      
+      new_neurosphere <- neurosphere_original + as.numeric(row$neurosphere_num)
+      new_area <- area_original + as.numeric(row$area)
+      
+      genotype[(passage_vector & type_vector), "neurosphere_num"] <- new_neurosphere
+      genotype[(passage_vector & type_vector), "area"] <- new_area
+      genotype[(passage_vector & type_vector), "ave_area"] <- new_area / new_neurosphere
+    }
+    
+  }
+  i <- i + 1
+}
+
+write.csv(genotype, "../MBNL12_neurosphere.csv")
