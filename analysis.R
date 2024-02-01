@@ -71,9 +71,9 @@ colnames(passagelines) <- c("passage", "cell_line", "neurosphere_num", "area", "
 
 
 ### Separate into genotypes ##########################
-dko <- c("10-4")
-wt <- c("2-2")
-ko2 <- c()
+dko <- c("2-2", "10-7")
+wt <- c("5-8", "7-3", "12-10")
+ko2 <- c("10-4", "12-5")
 
 i <- 1
 genotype <- data.frame(matrix(data=c('init', 'init', 'init', 'init', 'init'),nrow=1, ncol=5))
@@ -90,7 +90,7 @@ while(i <= length(dko)){
       vector <- c(row$passage, "DKO", row$neurosphere_num, row$area, as.numeric(row$area) / as.numeric(row$neurosphere_num)) 
       genotype <- rbind(genotype, vector)
     }
-    else if (!(genotype[genotype$passage == row$passage[1],]$type =='DKO')){
+    else if (!any(genotype[genotype$passage == row$passage[1],]$type =='DKO')){
       vector <- c(row$passage, "DKO", row$neurosphere_num, row$area, as.numeric(row$area) / as.numeric(row$neurosphere_num)) 
       genotype <- rbind(genotype, vector)
     }
@@ -127,7 +127,7 @@ while(i <= length(wt)){
       vector <- c(row$passage, "WT", row$neurosphere_num, row$area, as.numeric(row$area) / as.numeric(row$neurosphere_num)) 
       genotype <- rbind(genotype, vector)
     }
-    else if (!(genotype[genotype$passage == row$passage[1],]$type =='WT')){
+    else if (!(any(genotype[genotype$passage == row$passage[1],]$type =='WT'))){
       vector <- c(row$passage, "WT", row$neurosphere_num, row$area, as.numeric(row$area) / as.numeric(row$neurosphere_num)) 
       genotype <- rbind(genotype, vector)
     }
@@ -164,7 +164,7 @@ while(i <= length(ko2)){
       vector <- c(row$passage, "2KO", row$neurosphere_num, row$area, as.numeric(row$area) / as.numeric(row$neurosphere_num)) 
       genotype <- rbind(genotype, vector)
     }
-    else if (!(genotype[genotype$passage == row$passage[1],]$type =='2KO')){
+    else if (!any(genotype[genotype$passage == row$passage[1],]$type =='2KO')){
       vector <- c(row$passage, "2KO", row$neurosphere_num, row$area, as.numeric(row$area) / as.numeric(row$neurosphere_num)) 
       genotype <- rbind(genotype, vector)
     }
