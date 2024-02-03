@@ -6,9 +6,6 @@
 # import required libraries 
 library(tidyverse)
 
-# set directory with the data
-workdir <- "//192.168.68.57/SwansonLab/Neural Stem Cell/Data/Neurosphere Assays/DKO"
-
 ### Make the combined_data.csv file #############
 # make vector of folder names that contain the data
 folders <- list.dirs("../7dpp")[-1]
